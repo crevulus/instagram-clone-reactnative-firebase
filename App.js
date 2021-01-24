@@ -7,8 +7,18 @@ import { createStackNavigator } from "@react-navigation/stack";
 import * as firebase from "firebase";
 import firebaseConfig from "./firebaseConfig.js";
 
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
+
+import thunk from "redux-thunk";
+
+import rootReducer from "./redux/reducers";
+
 import Landing from "./components/auth/Landing";
 import { Register } from "./components/auth/Register";
+import Main from "./components/Main";
+
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
@@ -40,25 +50,25 @@ export default function App() {
     );
   }
 
-  if (loggedIn) {
+  if (!loggedIn) {
     return (
-      <View style={styles.mainContainer}>
-        <Text>User is logged in!!</Text>
-      </View>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Landing">
+          <Stack.Screen
+            name="Landing"
+            component={Landing}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="Register" component={Register} />
+        </Stack.Navigator>
+      </NavigationContainer>
     );
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Landing">
-        <Stack.Screen
-          name="Landing"
-          component={Landing}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="Register" component={Register} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <Main />
+    </Provider>
   );
 }
 

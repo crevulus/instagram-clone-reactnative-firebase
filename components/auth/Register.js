@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, Text, TextInput, Button } from "react-native";
 
 import firebase from "firebase";
+import "firebase/firestore"; // needed to do this extra import to get set method in onSignUp to work
 
 export class Register extends Component {
   constructor(props) {
@@ -19,7 +20,14 @@ export class Register extends Component {
       .auth()
       .createUserWithEmailAndPassword(email, pw)
       .then((res) => {
-        console.log(res);
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .set({
+            name,
+            email,
+          });
       })
       .catch((err) => console.error(err));
   };
