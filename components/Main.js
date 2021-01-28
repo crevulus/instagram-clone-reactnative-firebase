@@ -1,11 +1,20 @@
 import React, { Component } from "react";
-
 import { StyleSheet, Text, View } from "react-native";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import { connect } from "react-redux";
 import { bindActionCreators, bindActionsCreators } from "redux";
 
 import { fetchUser } from "../redux/actions/index";
+
+import Feed from "./main/Feed";
+import Profile from "./main/Profile";
+import Test from "./main/Test";
+
+const Empty = () => null;
+
+const Tab = createMaterialBottomTabNavigator();
 
 export class Main extends Component {
   componentDidMount() {
@@ -13,12 +22,51 @@ export class Main extends Component {
   }
 
   render() {
-    const { currentUser } = this.props;
     return (
-      <View style={styles.mainContainer}>
-        <Text>User is logged in!!</Text>
-        <Text>Welcome, {currentUser.name}</Text>
-      </View>
+      <Tab.Navigator initialRouteName="Feed" labeled={false}>
+        <Tab.Screen
+          name="Feed"
+          component={Feed}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name="home" color={color} size={26} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Add New"
+          component={Empty}
+          listeners={({ navigation }) => ({
+            tabPress: (event) => {
+              event.preventDefault();
+              navigation.navigate("Add");
+            },
+          })}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name="add" color={color} size={26} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name="account-circle" color={color} size={26} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Test"
+          component={Test}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name="science" color={color} size={26} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
     );
   }
 }

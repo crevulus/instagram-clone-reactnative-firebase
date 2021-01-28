@@ -17,6 +17,7 @@ import rootReducer from "./redux/reducers";
 import Landing from "./components/auth/Landing";
 import { Register } from "./components/auth/Register";
 import Main from "./components/Main";
+import Add from "./components/main/Add";
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
@@ -67,7 +68,16 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <Main />
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Main">
+          <Stack.Screen
+            name="Main"
+            component={Main}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="Add" component={Add} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </Provider>
   );
 }
